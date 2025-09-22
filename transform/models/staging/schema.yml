@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: raw
+    tables:
+      - name: events
+        columns:
+          - name: site_id
+            tests: [not_null]
+          - name: timestamp
+            tests: [not_null]
+          - name: event_type
+            tests: [not_null]
+          - name: metric_value
+            tests:
+              - not_null
+
+models:
+  - name: stg_events
+    columns:
+      - name: site_id
+        tests: [not_null]
+      - name: event_ts
+        tests: [not_null]
+      - name: event_type
+        tests: [not_null]

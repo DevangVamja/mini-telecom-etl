@@ -1,0 +1,13 @@
+name: 'mini_telecom_etl'
+version: '1.0.0'
+profile: 'mini_telecom'
+config-version: 2
+
+model-paths: ["models"]
+models:
+  mini_telecom_etl:
+    +materialized: view
+    staging:
+      +schema: staging
+    marts:
+      +schema: marts

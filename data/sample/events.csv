@@ -1,0 +1,7 @@
+site_id,timestamp,event_type,metric_value
+DFW001,2025-09-01T00:00:00Z,throughput_mbps,120
+DFW001,2025-09-01T00:05:00Z,latency_ms,35
+DFW001,2025-09-01T00:10:00Z,packet_loss_pct,0.1
+DFW002,2025-09-01T00:00:00Z,throughput_mbps,95
+DFW002,2025-09-01T00:05:00Z,latency_ms,42
+DFW002,2025-09-01T00:10:00Z,packet_loss_pct,0.3

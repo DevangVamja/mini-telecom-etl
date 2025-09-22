@@ -1,0 +1,34 @@
+{
+  "data_asset_name": "events",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "site_id"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "timestamp"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "event_type"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "metric_value",
+        "min_value": 0,
+        "max_value": 100000
+      }
+    }
+  ],
+  "meta": {
+    "notes": "Minimal GE suite for demo purposes."
+  }
+}
