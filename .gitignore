@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env
+.env.*
+*.egg-info/
+
+# Airflow
+airflow.db
+logs/
+*/logs/
+
+# Data outputs
+data/bronze/
+data/silver/
+data/gold/
+
+# OS
+.DS_Store
+
+# Terraform
+.terraform/
+terraform.tfstate*
