@@ -25,7 +25,7 @@ Mermaid diagram of the flow:
 
 ```mermaid
 flowchart LR
-    A[Vendor Files (CSV)] -->|ingest| B[Bronze (S3/landing)]
+    A[Vendor Files CSV] -->|ingest| B[Bronze (S3/landing)]
     B -->|Airflow DAG| C[dbt Staging Models]
     C --> D[dbt Mart Models]
     D --> E[Analytics/BI (BigQuery/Snowflake/Parquet)]
