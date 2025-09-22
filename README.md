@@ -1,17 +1,27 @@
-# Mini Telecom ETL: Airflow → dbt → Great Expectations (+OpenLineage)
+# Mini Telecom ETL
+Production-style **ETL template** for telecom (or any event) data using **Airflow → dbt → Great Expectations** with **OpenLineage** and a sprinkle of **IaC**. Built to *show, not tell* your ETL chops: idempotency, SLAs, testing, lineage, and backfills.
 
-A production-style **mini ETL** you can showcase publicly. It demonstrates:
-- **Batch ingest** of telecom KPIs (CSV → bronze).
-- **Orchestration** with Airflow (idempotent loads, retries, SLAs).
-- **Transformations** with dbt (staging + marts, tests).
-- **Data quality** with Great Expectations (freshness, nulls, ranges).
-- **Lineage** with OpenLineage (YAML config).
-- **Infra-as-code** (Terraform snippet for an S3 landing bucket).
-- **Idempotent merge** pattern + simple integration test.
+<p align="left">
+  <a href="#"><img alt="Status" src="https://img.shields.io/badge/status-demo-blue"></a>
+  <a href="#"><img alt="Airflow" src="https://img.shields.io/badge/orchestrator-Airflow-017CEE"></a>
+  <a href="#"><img alt="dbt" src="https://img.shields.io/badge/transform-dbt-orange"></a>
+  <a href="#"><img alt="Great Expectations" src="https://img.shields.io/badge/data%20quality-Great%20Expectations-4B8BBE"></a>
+  <a href="#"><img alt="License" src="https://img.shields.io/badge/license-MIT-green"></a>
+</p>
 
-> Use this as a template to discuss SLAs, data contracts, and backfills in interviews.
+---
 
-## Architecture (Mermaid)
+## ✨ Why this repo exists
+Hiring teams want proof of **real-world ETL** skills. This repo demonstrates:
+- **Idempotent ingest** (dedupe by business key; safe backfills)
+- **Airflow orchestration** with retries and clear task boundaries
+- **dbt** staging + marts with **tests** and simple dimensional modeling
+- **Great Expectations** data contracts (freshness + nulls + ranges)
+- **OpenLineage** config for lineage capture
+- **Terraform** snippet for a landing bucket
+- A minimal **UPSERT** pattern via an integration test
+
+Mermaid diagram of the flow:
 
 ```mermaid
 flowchart LR
@@ -29,26 +39,9 @@ flowchart LR
     D -->|OpenLineage| H
 ```
 
-## Quickstart (local demo)
+---
 
-1. **Explore data**: `data/sample/events.csv`  
-2. **Run transform locally** (no dbt install needed to read SQL): open `transform/models/*` to inspect logic.  
-3. **Airflow DAG**: `orchestration/airflow/dags/telecom_kpi_pipeline.py` (uses BashOperator placeholders for dbt/GE).  
-4. **Quality**: Expectation suite under `observability/great_expectations/expectations/`.  
-5. **Lineage**: `observability/lineage/openlineage.yml` (example config).  
-6. **Infra**: Terraform snippet in `infra/terraform/main.tf`.  
-7. **Tests**: `tests/integration/test_idempotent_merge.py` demonstrates an UPSERT pattern.
-
-> You can swap S3/BigQuery/Snowflake as needed—this is cloud-agnostic by design.
-
-## Talking points (copy to resume/JD tailoring)
-- Built idempotent ETL with Airflow→dbt; **99.7% on-time SLAs**, freshness **<20 min** (example targets).
-- Enforced data contracts with Great Expectations and column tests in dbt.
-- Documented lineage with OpenLineage; added alerts on freshness and null-rate drift.
-- Cut compute cost via partitioning + clustering; safe **backfills** over 12 months.
-
-## Repo layout
-
+## 🧱 Repo layout
 ```
 mini-telecom-etl/
 ├─ data/sample/events.csv
@@ -63,9 +56,87 @@ mini-telecom-etl/
 ├─ observability/lineage/openlineage.yml
 ├─ infra/terraform/main.tf
 ├─ tests/integration/test_idempotent_merge.py
+├─ docker-compose.yml               # optional local Airflow
+├─ .env.example                     # placeholders for local vars
+├─ .gitignore
+├─ LICENSE
+├─ CONTRIBUTING.md
 └─ README.md
 ```
 
-## Notes
-- Airflow/dbt/GE commands are placeholders so the project is light-weight. Replace the `echo` commands with real CLI invocations in your environment.
-- Add a scheduler (docker-compose) if you want to run it end-to-end.
+---
+
+## 🚀 Quickstart (local demo)
+
+> This repo is designed to be **cloud-agnostic**. Swap S3/BigQuery/Snowflake to your environment as needed.
+
+**Option A — Just run the ingest locally**  
+```bash
+python ingest/batch_loader.py --csv data/sample/events.csv --out data/bronze
+```
+
+**Option B — Kick the tires on the Airflow DAG (placeholders)**  
+1. Install Airflow (or use the provided `docker-compose.yml` to spin it up).  
+2. Open `orchestration/airflow/dags/telecom_kpi_pipeline.py`.  
+3. Replace `echo 'dbt ...'` and `echo 'great_expectations ...'` with your local CLI commands.  
+4. Trigger the DAG; inspect task logs and timings.  
+
+**dbt models**  
+- Staging cleans types and names (`stg_events.sql`).  
+- Marts include a tiny dimension (`dim_sites`) and KPI fact (`fct_network_kpi`).  
+- Add your profiles as needed (`transform/dbt_project.yml` references `mini_telecom`).
+
+**Great Expectations**  
+- Minimal suite under `observability/great_expectations/expectations/events_suite.json`.  
+- Add checkpoints and a datasource for your environment.
+
+**Integration Test (UPSERT / Idempotent Merge)**  
+```bash
+python -m pytest -q tests/integration/test_idempotent_merge.py
+```
+
+---
+
+## 🧪 What to talk about in interviews
+- **SLAs + freshness**: define targets (e.g., on-time 99.7%, <20m freshness), show how Airflow sensors + retries + alerts enforce them.  
+- **Idempotency + backfills**: business key dedupe; late/duplicate event strategy; safe historical replays.  
+- **Data quality**: GE + dbt tests (not_null, uniqueness, ranges); alerts on drift.  
+- **Lineage**: OpenLineage captures from ingest→staging→marts; enables impact analysis.  
+- **Cost/perf**: file sizing, partition pruning, clustering, small-file compaction.  
+
+---
+
+## 🔧 Configure (optional)
+Copy `.env.example` to `.env` and populate secrets (if you enable OpenLineage/Slack or real cloud resources). For S3, wire up the Terraform in `infra/terraform/main.tf`.
+
+---
+
+## 📦 Make this your own
+- Swap sample CSVs with your domain data.  
+- Add dbt snapshots for SCD2.  
+- Introduce CDC (Debezium/Kafka) and a stream → batch hybrid.  
+- Layer in metrics (OpenMetrics/Prometheus) and dashboards (Grafana).  
+
+---
+
+## 🤝 Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## 📄 License
+[MIT](LICENSE)
+
+---
+
+## 🧰 GitHub push (copy-paste)
+```bash
+# 1) Unzip and init repo
+unzip mini-telecom-etl.zip && cd mini-telecom-etl
+git init
+git add .
+git commit -m "Initial commit: mini telecom ETL (Airflow + dbt + GE + OpenLineage)"
+
+# 2) Create a new repo on GitHub (via UI), then:
+git branch -M main
+git remote add origin https://github.com/<YOUR-USER>/mini-telecom-etl.git
+git push -u origin main
+```
