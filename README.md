@@ -101,7 +101,7 @@ python -m pytest -q tests/integration/test_idempotent_merge.py
 ---
 
 ## 🧪 Key Highlights
-- **SLAs + freshness**: define targets (e.g., on-time 99.7%, <20m freshness), show how Airflow sensors + retries + alerts enforce them.  
+- **SLAs + freshness**: define targets (e.g., on-time 99.7%, <20m freshness).  
 - **Idempotency + backfills**: business key dedupe; late/duplicate event strategy; safe historical replays.  
 - **Data quality**: GE + dbt tests (not_null, uniqueness, ranges); alerts on drift.  
 - **Lineage**: OpenLineage captures from ingest→staging→marts; enables impact analysis.  
