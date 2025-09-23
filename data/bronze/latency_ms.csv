@@ -1,3 +1,0 @@
-site_id,timestamp,event_type,metric_value
-DFW001,2025-09-01T00:05:00Z,latency_ms,35.0
-DFW002,2025-09-01T00:05:00Z,latency_ms,42.0

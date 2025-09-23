@@ -8,19 +8,19 @@ from pathlib import Path
 def load_events(csv_path: str, out_dir: str):
     df = pd.read_csv(csv_path)
     # Idempotency: drop exact duplicates based on business key
-    business_key = ["site_id", "timestamp", "event_type"]
+    business_key = ["timestamp","tower_id","users_connected","download_speed","upload_speed","latency","weather","congestion"]
     df = df.drop_duplicates(subset=business_key, keep="last")
-    # Simulated partitioning by event_type
+    # Simulated partitioning by weather
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    for evt, sub in df.groupby("event_type"):
+    for evt, sub in df.groupby("weather"):
         sub.to_csv(out / f"{evt}.csv", index=False)
     return df
 
 if __name__ == "__main__":
     import argparse
     p = argparse.ArgumentParser()
-    p.add_argument("--csv", default="data/sample/events.csv")
+    p.add_argument("--csv", default="data/sample/Telecom_Network_Data.csv")
     p.add_argument("--out", default="data/bronze")
     args = p.parse_args()
     df = load_events(args.csv, args.out)

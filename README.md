@@ -48,16 +48,19 @@ mini-telecom-etl/
 ├─ ingest/batch_loader.py
 ├─ orchestration/airflow/dags/telecom_kpi_pipeline.py
 ├─ transform/dbt_project.yml
-├─ transform/models/staging/stg_events.sql
+├─ transform/macros/truncate_grain.sql
+├─ transform/models/staging/stg_tower_events.sql
 ├─ transform/models/staging/schema.yml
-├─ transform/models/marts/kpi/dim_sites.sql
-├─ transform/models/marts/kpi/fct_network_kpi.sql
+├─ transform/models/marts/fct_tower_kpi.sql
+├─ transform/models/marts/schema.yml
+├─ transform/models/marts/kpi/dim_sites.sql             # legacy example
+├─ transform/models/marts/kpi/fct_network_kpi.sql      # legacy example
 ├─ observability/great_expectations/expectations/events_suite.json
 ├─ observability/lineage/openlineage.yml
 ├─ infra/terraform/main.tf
 ├─ tests/integration/test_idempotent_merge.py
-├─ docker-compose.yml               # optional local Airflow
-├─ .env.example                     # placeholders for local vars
+├─ docker-compose.yml
+├─ .env.example
 ├─ .gitignore
 ├─ LICENSE
 ├─ CONTRIBUTING.md
@@ -97,7 +100,7 @@ python -m pytest -q tests/integration/test_idempotent_merge.py
 
 ---
 
-## 🧪 What to talk about in interviews
+## 🧪 Key Highlights
 - **SLAs + freshness**: define targets (e.g., on-time 99.7%, <20m freshness), show how Airflow sensors + retries + alerts enforce them.  
 - **Idempotency + backfills**: business key dedupe; late/duplicate event strategy; safe historical replays.  
 - **Data quality**: GE + dbt tests (not_null, uniqueness, ranges); alerts on drift.  
@@ -111,32 +114,9 @@ Copy `.env.example` to `.env` and populate secrets (if you enable OpenLineage/Sl
 
 ---
 
-## 📦 Make this your own
-- Swap sample CSVs with your domain data.  
-- Add dbt snapshots for SCD2.  
-- Introduce CDC (Debezium/Kafka) and a stream → batch hybrid.  
-- Layer in metrics (OpenMetrics/Prometheus) and dashboards (Grafana).  
-
----
-
 ## 🤝 Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📄 License
 [MIT](LICENSE)
 
----
-
-## 🧰 GitHub push (copy-paste)
-```bash
-# 1) Unzip and init repo
-unzip mini-telecom-etl.zip && cd mini-telecom-etl
-git init
-git add .
-git commit -m "Initial commit: mini telecom ETL (Airflow + dbt + GE + OpenLineage)"
-
-# 2) Create a new repo on GitHub (via UI), then:
-git branch -M main
-git remote add origin https://github.com/<YOUR-USER>/mini-telecom-etl.git
-git push -u origin main
-```

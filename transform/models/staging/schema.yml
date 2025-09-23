@@ -2,25 +2,33 @@ version: 2
 
 sources:
   - name: raw
+    description: "Raw telecom events landing (hourly rows)."
     tables:
-      - name: events
+      - name: tower_events
+        description: "Uploaded CSV ingested to warehouse as raw.tower_events."
         columns:
-          - name: site_id
-            tests: [not_null]
           - name: timestamp
             tests: [not_null]
-          - name: event_type
+          - name: tower_id
             tests: [not_null]
-          - name: metric_value
-            tests:
-              - not_null
+          - name: users_connected
+          - name: download_speed
+          - name: upload_speed
+          - name: latency
+          - name: weather
+          - name: congestion
 
 models:
-  - name: stg_events
+  - name: stg_tower_events
+    description: "Typed, cleaned raw events."
     columns:
-      - name: site_id
-        tests: [not_null]
       - name: event_ts
         tests: [not_null]
-      - name: event_type
+      - name: tower_id
         tests: [not_null]
+      - name: users_connected
+      - name: download_speed_mbps
+      - name: upload_speed_mbps
+      - name: latency_ms
+      - name: weather
+      - name: congestion_flag

@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: fct_tower_kpi
+    description: "Hourly KPIs per tower with basic SLA flags and derived features."
+    columns:
+      - name: tower_id_hour
+        tests: [not_null, unique]
+      - name: tower_id
+        tests: [not_null]
+      - name: hour_ts
+        tests: [not_null]
+      - name: users_connected_avg
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tower_events')
+              field: tower_id
+      - name: download_speed_avg
+        tests: [not_null]
+      - name: upload_speed_avg
+        tests: [not_null]
+      - name: latency_avg
+        tests: [not_null]
+      - name: congestion_flag
+        tests:
+          - accepted_values:
+              values: [0, 1]
